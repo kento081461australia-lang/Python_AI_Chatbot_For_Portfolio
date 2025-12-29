@@ -13,6 +13,15 @@ client = genai.Client(api_key=api_key)
 st.set_page_config(page_title="My AI App", page_icon="TK")
 st.title("Gemini based Chat")
 
+# -- Initialize Session State
+if "is_generating" not in st.session_state:
+    st.session_state.is_generating = False
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+if "last_prompt" not in st.session_state:
+    st.session_state.last_prompt = ""
+
+
 # -- Sidebar (Mode, Temp, Mock switch)
 with st.sidebar:
     st.title("Settings")
@@ -24,25 +33,36 @@ with st.sidebar:
             "English Teacher",
             "Code Reviewer",
         ),
+        disabled=st.session_state.is_generating,
     )
-    temp_value = st.sidebar.slider("Creativity", 0.0, 2.0, 1.0, 0.1)
-    use_mock = st.checkbox("Enable Mock Mode", value=False)
-    if st.button("Clear History"):
+    temp_value = st.sidebar.slider(
+        "Creativity",
+        min_value=0.0,
+        max_value=2.0,
+        value=1.0,
+        step=0.1,
+        # disable during generating
+        disabled=st.session_state.is_generating,
+    )
+    use_mock = st.checkbox(
+        "Enable Mock Mode", value=False, disabled=st.session_state.is_generating
+    )
+    if st.button("Clear History", disabled=st.session_state.is_generating):
         st.session_state.chat_history = []
         st.rerun()
 
 # -- Logic for System Instructions
-instructions = "You are a helpful assistant."
-if mode == "Professional Interviewer":
-    instructions = "You are senior tech interviewer in Australia."
-elif mode == "English Teacher":
-    instructions = "You are an English teacher based on TESOL."
-elif mode == "Code Reviewer":
-    instructions = "You are an excellent code reviewer."
+match mode:
+    case "Professional Interviewer":
+        instructions = "You are senior tech interviewer..."
+    case "English Teacher":
+        instructions = "You are an English teacher..."
+    case "Code Reviewer":
+        instructions = "You are an excellent code reviewer."
+    case _:  # Default value
+        instructions = "You are a helpful assistant."
 
-# -- Session Control
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
+# Mode Switch Logic
 if "current_mode" not in st.session_state:
     st.session_state.current_mode = mode
 
@@ -53,23 +73,37 @@ if mode != st.session_state.current_mode:
 
 # -- Display History
 for msg in st.session_state.chat_history:
-    with st.chat_message(msg["role"]):
+    display_role = "assistant" if msg["role"] == "model" else msg["role"]
+    with st.chat_message(display_role):
         st.markdown(msg["parts"][0]["text"])
 
 # -- User Input & AI Response
-if prompt := st.chat_input("Ask me anything..."):
-    st.session_state.chat_history.append({"role": "user", "parts": [{"text": prompt}]})
+if prompt := st.chat_input(
+    "Ask me anything...", disabled=st.session_state.is_generating
+):
+    st.session_state.is_generating = True
+    st.session_state.last_prompt = prompt
+    st.rerun()
+
+# -- Generating logic excutes
+if st.session_state.is_generating:
+    current_prompt = st.session_state.last_prompt
+
+    st.session_state.chat_history.append(
+        {"role": "user", "parts": [{"text": current_prompt}]}
+    )
     with st.chat_message("user"):
-        st.markdown(prompt)
+        st.markdown(current_prompt)
 
     with st.chat_message("assistant"):
         timer_placeholder = st.empty()
         start_time = time.time()
+        st.caption(f"Settings: Temerature = {temp_value}")
 
         try:
             if use_mock:
                 # Mock Mode
-                full_response = st.write_stream(get_mock_response(prompt, mode))
+                full_response = st.write_stream(get_mock_response(current_prompt, mode))
             else:
                 # Real API
                 def stream_gen():
@@ -90,5 +124,10 @@ if prompt := st.chat_input("Ask me anything..."):
         except Exception as e:
             st.error(f"Error: {e}")
             full_response = "Error occurred."
+
+        finally:
+            st.session_state.is_generating = False
+            st.session_state.last_prompt = ""
+            st.rerun()
 
         timer_placeholder.caption(f"Completed in {time.time() - start_time:.2f}s")
