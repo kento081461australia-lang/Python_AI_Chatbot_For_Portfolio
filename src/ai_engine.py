@@ -3,7 +3,7 @@ from google import genai
 
 
 def get_gemini_response(client, history, instructions, temp_value):
-    """Using GenAI(gemini)"""
+    # Using GenAI(gemini)
     return client.models.generate_content_stream(
         model="models/gemini-flash-latest",
         contents=history,
@@ -15,7 +15,7 @@ def get_gemini_response(client, history, instructions, temp_value):
 
 
 def get_mock_response(prompt, mode):
-    """Dummy Answer for development（Generator）"""
+    # Dummy Answer for development（Generator)
     responses = {
         "Professional Interviewer": f"That's an insightful answer about {prompt}. How would you scale this?",
         "English Teacher": f"Interesting! You used '{prompt}'. Let's check the grammar.",
@@ -26,4 +26,3 @@ def get_mock_response(prompt, mode):
 
     for char in response_text:
         yield char
-        time.sleep(0.05)

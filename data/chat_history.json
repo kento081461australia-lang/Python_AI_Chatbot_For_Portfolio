@@ -1,0 +1,26 @@
+[
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": "fdfd"
+            }
+        ]
+    },
+    {
+        "role": "model",
+        "parts": [
+            {
+                "text": "Hello! I see you typed 'fdfd'. Is there something specific you would like to ask or discuss?"
+            }
+        ]
+    },
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": "css"
+            }
+        ]
+    }
+]
