@@ -1,26 +1,104 @@
-[
-    {
-        "role": "user",
-        "parts": [
-            {
-                "text": "fdfd"
-            }
-        ]
+{
+    "settings": {
+        "mode": "Casual Assistant",
+        "temp": 1.0
     },
-    {
-        "role": "model",
-        "parts": [
-            {
-                "text": "Hello! I see you typed 'fdfd'. Is there something specific you would like to ask or discuss?"
-            }
-        ]
-    },
-    {
-        "role": "user",
-        "parts": [
-            {
-                "text": "css"
-            }
-        ]
-    }
-]
+    "chat_history": [
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "text": "ｄｆｄ"
+                }
+            ]
+        },
+        {
+            "role": "model",
+            "parts": [
+                {
+                    "text": "Sure, I can help with 'ｄｆｄ'. What else?"
+                }
+            ]
+        },
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "text": "ｆｄ"
+                }
+            ]
+        },
+        {
+            "role": "model",
+            "parts": [
+                {
+                    "text": "Okay, 'ｆｄ'. What can I do for you regarding that?"
+                }
+            ]
+        },
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "text": "dfd"
+                }
+            ]
+        },
+        {
+            "role": "model",
+            "parts": [
+                {
+                    "text": "I see you've used the letters \"dfd\".\n\nHow can I help you with this? Are you looking for:\n\n1.  A definition? (It doesn't stand for a common acronym in English, but it might be jargon).\n2.  A search?\n3.  Something else?"
+                }
+            ]
+        },
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "text": "sq"
+                }
+            ]
+        },
+        {
+            "role": "model",
+            "parts": [
+                {
+                    "text": "I see you've entered \"sq\".\n\nAre you looking for:\n\n*   **SQ** as an abbreviation (e.g., Square)?\n*   A search related to those letters?\n*   Something else?\n\nPlease let me know how I can assist you!"
+                }
+            ]
+        },
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "text": "ds"
+                }
+            ]
+        },
+        {
+            "role": "model",
+            "parts": [
+                {
+                    "text": "I see you've entered \"ds\".\n\nAre you looking for information related to:\n\n*   **Data Science (DS)**?\n*   The **Nintendo DS** gaming console?\n*   An abbreviation of **Datasets**?\n*   Something else?\n\nHow can I help you with this?"
+                }
+            ]
+        },
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "text": "dw"
+                }
+            ]
+        },
+        {
+            "role": "model",
+            "parts": [
+                {
+                    "text": "I see you've entered \"dw\".\n\nAre you looking for information related to:\n\n*   **Data Warehouse (DW)**?\n*   **DreamWorks**?\n*   An abbreviation of **Downtown**?\n*   Something else?\n\nHow can I assist you?"
+                }
+            ]
+        }
+    ]
+}

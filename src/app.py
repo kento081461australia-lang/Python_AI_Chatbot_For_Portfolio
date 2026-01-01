@@ -46,15 +46,29 @@ if "chat_history" not in st.session_state:
         try:
             with open(history_file, "r", encoding="utf-8") as f:
                 saved_data = json.load(f)
-                st.session_state.chat_history = saved_data.get("chat_history", [])
-                saved_settings = saved_data.get("settings", {})
-                st.session_state.initial_mode = saved_settings.get(
-                    "mode", "Casual Assistant"
-                )
-                st.session_state.initial_temp = saved_settings.get("temp", 1.0)
+                if isinstance(saved_data, dict):
+                    st.session_state.chat_history = saved_data.get("chat_history", [])
+                    saved_settings = saved_data.get("settings", {})
+                    st.session_state.initial_mode = saved_settings.get(
+                        "mode", "Casual Assistant"
+                    )
+                    st.session_state.initial_temp = saved_settings.get("temp", 1.0)
+                else:
+                    st.session_state.chat_history = saved_data
+                    st.session_state.initial_mode = "Casual Assistant"
+                    st.session_state.initial_temp = 1.0
         except Exception as e:
-            st.error(f"Failed to load history:: {e}")
+            # For engineer
+            print(f"Log: JSON Parse Error or Corrupted file - {e}")
+            # For user
+            st.toast(
+                "Settings couldn't be loaded, so we've started with a clean slate!"
+            )
+
+            # Inialzie the chat hisotry and settings.
             st.session_state.chat_history = []
+            st.session_state.initial_mode = "Casual Assistant"
+            st.session_state.initial_temp = 1.0
     else:
         st.session_state.chat_history = []
 
@@ -105,6 +119,10 @@ with st.sidebar:
         st.session_state.chat_history = []
         save_all([], mode, temp_value)
         st.rerun()
+
+    st.divider()
+    if "last_response_time" in st.session_state:
+        st.caption(f"Last response: {st.session_state.last_response_time:.2f}s")
 
     st.divider()
     st.subheader("Data Preview(JSON)")
@@ -187,6 +205,9 @@ if st.session_state.is_generating:
                 {"role": "model", "parts": [{"text": full_response}]}
             )
             save_all(st.session_state.chat_history, mode, temp_value)
+
+            st.session_state.last_response_time = time.time() - start_time
+
         except Exception as e:
             st.error(f"Error: {e}")
 
@@ -194,5 +215,3 @@ if st.session_state.is_generating:
             st.session_state.is_generating = False
             st.session_state.last_prompt = ""
             st.rerun()
-
-        timer_placeholder.caption(f"Completed in {time.time() - start_time:.2f}s")
